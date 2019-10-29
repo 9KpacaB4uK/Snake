@@ -30,36 +30,21 @@ public class SnakeMain {
             g2d.setStroke(new BasicStroke(1));
             Line2D line;
             int step = 0;
-            for(int i=0;i<gridW.length;i++) {
+            for(int i=0;i<gridW.length;i++){
                 gridW[i] = step;
-                step+=block;
-            }
-            step=0;
-            for(int i=0;i<gridH.length;i++){
-                gridH[i]= step;
-                step+=block;
-            }
-            for(int i=0;i<gridW.length;i++){
-               // System.out.print(gridW[i]+" U ");
-                for(int j=0;j<gridH.length;j++){
-                    System.out.print(gridW[j]+" | ");
-                }
-                System.out.println();
-            }
-            step=0;
-            for(int i=0;i<gridW.length;i++){
                 step+=block;
                 line = new Line2D.Double(step,height_app,step,0);
                 g2d.draw(line);
             }
             step = 0;
             for(int i=0;i<gridH.length;i++){
+                gridH[i]= step;
                 step+=block;
                 line = new Line2D.Double(0,step,width_app,step);
                 g2d.draw(line);
             }
-            int rec_x=gridW[1-1];
-            int rec_y=gridH[1-1];
+            int rec_x=gridW[1-1];//start position X
+            int rec_y=gridH[1-1];//start position Y
             Rectangle2D rect = new Rectangle2D.Double(rec_x, rec_y, block, block);
             g2d.setColor(Color.red);
             g2d.fillRect((int)rect.getX(),(int)rect.getY(),block,block);
