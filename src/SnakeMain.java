@@ -9,8 +9,8 @@ public class SnakeMain {
     static int width_app = 1280;
     static int height_app = 720;
     static int block = 40;
-    static int w = 32,h = 18;//grid
-    static int grid[][] = new int[w][h];
+    static int gridW[]=new int[width_app/block];
+    static int gridH[]=new int[ height_app/block];
     public static void main(String[] args){
         gameScreen gS = new gameScreen("Snake");
         new SnakeMain().go();
@@ -22,18 +22,42 @@ public class SnakeMain {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.green);
             g2d.setStroke(new BasicStroke(1));
+            Line2D line;
             int step = 0;
-            for(int i=0;i<w;i++){
+            for(int i=0;i<gridW.length;i++) {
+                gridW[i] = step;
                 step+=block;
-                Line2D line = new Line2D.Double(step,height_app,step,0);
+            }
+            step=0;
+            for(int i=0;i<gridH.length;i++){
+                gridH[i]= step;
+                step+=block;
+            }
+            for(int i=0;i<gridW.length;i++){
+               // System.out.print(gridW[i]+" U ");
+                for(int j=0;j<gridH.length;j++){
+                    System.out.print(gridW[j]+" | ");
+                }
+                System.out.println();
+            }
+            step=0;
+            for(int i=0;i<gridW.length;i++){
+                step+=block;
+                line = new Line2D.Double(step,height_app,step,0);
                 g2d.draw(line);
             }
             step = 0;
-            for(int i=0;i<h;i++){
+            for(int i=0;i<gridH.length;i++){
                 step+=block;
-                Line2D line = new Line2D.Double(0,step,width_app,step);
+                line = new Line2D.Double(0,step,width_app,step);
                 g2d.draw(line);
             }
+            int rec_x=gridW[1-1];
+            int rec_y=gridH[1-1];
+            Rectangle2D rect = new Rectangle2D.Double(rec_x, rec_y, block, block);
+            g2d.setColor(Color.red);
+            g2d.fillRect((int)rect.getX(),(int)rect.getY(),block,block);
+            g2d.draw(rect);
             setBackground(Color.black);
         }
     }
@@ -45,17 +69,16 @@ public class SnakeMain {
 
             setSize(width_app,height_app);
             setBounds(width_Screen/2-width_app/2,height_Screen/2-height_app/2,width_app,height_app);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//zakrivaet programu na krestik
-            setResizable(false);
+            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close on X
+           // setResizable(false);
             setUndecorated(true);//without title bar
-            setVisible(true);
-
             getContentPane().add(dPanel);
+            setVisible(true);
         }
+
     }
     void hero(){
     }
     void go(){
-
     }
 }
