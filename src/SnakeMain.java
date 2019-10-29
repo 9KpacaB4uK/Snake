@@ -11,8 +11,6 @@ public class SnakeMain {
     static int block = 40;
     static int w = 32,h = 18;//grid
     static int grid[][] = new int[w][h];
-    static JFrame frame = new JFrame();
-    JPanel panel = new JPanel();
     public static void main(String[] args){
         gameScreen gS = new gameScreen("Snake");
         new SnakeMain().go();
@@ -26,15 +24,15 @@ public class SnakeMain {
             g2d.setStroke(new BasicStroke(1));
             int step = 0;
             for(int i=0;i<w;i++){
+                step+=block;
                 Line2D line = new Line2D.Double(step,height_app,step,0);
                 g2d.draw(line);
-                step= step + block;
             }
             step = 0;
             for(int i=0;i<h;i++){
+                step+=block;
                 Line2D line = new Line2D.Double(0,step,width_app,step);
                 g2d.draw(line);
-                step+=block;
             }
             setBackground(Color.black);
         }
@@ -49,6 +47,7 @@ public class SnakeMain {
             setBounds(width_Screen/2-width_app/2,height_Screen/2-height_app/2,width_app,height_app);
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//zakrivaet programu na krestik
             setResizable(false);
+            setUndecorated(true);//without title bar
             setVisible(true);
 
             getContentPane().add(dPanel);
