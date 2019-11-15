@@ -27,18 +27,18 @@ public class SnakeMain {
     }
     public class moveSnake{
         public int x=0,y=0;
-
+        public String moveTo= "right";
         public void up() {
-            y -= block;
+            moveTo="up";
         }
         public void down(){
-            y+=block;
+            moveTo="down";
         }
         public void left(){
-            x-=block;
+            moveTo="left";
         }
         public void right(){
-            x+=block;
+            moveTo="right";
         }
 
     }
@@ -117,6 +117,20 @@ public class SnakeMain {
             new Timer(500, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    switch (mS.moveTo){
+                        case "up":
+                            mS.y -= block;
+                            break;
+                        case "down":
+                            mS.y += block;
+                            break;
+                        case "left":
+                            mS.x-=block;
+                            break;
+                        case "right":
+                            mS.x+=block;
+                            break;
+                    }
                     rec_x = mS.x;
                     rec_y = mS.y;
                     System.out.println(rec_x +" "+rec_y);
