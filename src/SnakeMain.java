@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 import javax.swing.Timer;
 public class SnakeMain {
     static int width_Screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
@@ -18,15 +19,19 @@ public class SnakeMain {
     static int block = 40;
     static int gridW[]=new int[width_app/block];
     static int gridH[]=new int[ height_app/block];
-    static int rec_x=gridW[gridW.length/2];//start position X
-    static int rec_y=gridH[gridH.length/2];//start position Y
+    static int rec_x=(gridW.length-1)/2*block;//start position X
+    static int rec_y=(gridH.length-1)/2*block;//start position Y
+    static Random rand = new Random();
+    static int food_x = rand.nextInt(gridW.length)*block;//start position of food X
+    static int food_y = rand.nextInt(gridH.length)*block;//start position of food Y
     public gameScreen gS = new gameScreen("Snake");
     public moveSnake mS = new moveSnake();
+    public foodSpawn fS = new foodSpawn();
     public static void main (String[] args) {
         new SnakeMain();
+
     }
     public class moveSnake{
-        public int x=0,y=0;
         public String moveTo= "right";
         public void up() {
             moveTo="up";
@@ -42,6 +47,12 @@ public class SnakeMain {
         }
 
     }
+    public static class foodSpawn {
+        public void spawn() {
+            food_x = rand.nextInt(gridW.length)*block;
+            food_y = rand.nextInt(gridH.length)*block;
+        }
+    }
     public static class DPanel extends JPanel {
 
         protected void paintComponent(Graphics g) {
@@ -49,6 +60,7 @@ public class SnakeMain {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.green);
             g2d.setStroke(new BasicStroke(1));
+            setBackground(Color.black);
             Line2D line;
 
             //Draw grid X and Y
@@ -72,8 +84,12 @@ public class SnakeMain {
             g2d.setColor(Color.red);
             g2d.fillRect((int)rect.getX(),(int)rect.getY(),block,block);
             g2d.draw(rect);
-            setBackground(Color.black);
 
+            //Draw Food
+            Rectangle2D food = new Rectangle2D.Double(food_x, food_y, block, block);
+            g2d.setColor(Color.yellow);
+            g2d.fillRect((int)food.getX(),(int)food.getY(),block,block);
+            g2d.draw(food);
         }
     }
     public class gameScreen extends JFrame {
@@ -114,26 +130,29 @@ public class SnakeMain {
                     }
                 }
             });
-            new Timer(500, new ActionListener() {
+            new Timer(200, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     switch (mS.moveTo){
                         case "up":
-                            mS.y -= block;
+                            rec_y -= block;
                             break;
                         case "down":
-                            mS.y += block;
+                            rec_y += block;
                             break;
                         case "left":
-                            mS.x-=block;
+                            rec_x-=block;
                             break;
                         case "right":
-                            mS.x+=block;
+                            rec_x+=block;
                             break;
                     }
-                    rec_x = mS.x;
-                    rec_y = mS.y;
-                    System.out.println(rec_x +" "+rec_y);
+                    //System.out.println("recX"+rec_x+" recY"+rec_y +"\nfoodX:"+food_x+" foodY"+food_y);
+
+                    //if ate a food
+                    if(rec_x == food_x && rec_y == food_y){
+                        fS.spawn();
+                    }
                     gS.repaint();
                 }
             }).start();
