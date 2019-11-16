@@ -12,44 +12,36 @@ import java.awt.geom.Rectangle2D;
 import java.util.Random;
 import javax.swing.Timer;
 public class SnakeMain {
+    //Get size of monitor/screen
     static int width_Screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
     static int height_Screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+
+    //Set game screen
     static int width_app = 1280;
     static int height_app = 720;
+
+    //grid screen
     static int block = 40;//40
     static int gridW[] = new int[width_app/block];
     static int gridH[] = new int[height_app/block];
-    static int rec_x[] = new int[gridW.length*gridH.length];//(gridW.length-1)/2*block;//start position X
-    static int rec_y[] = new int[gridW.length*gridH.length];//(gridH.length-1)/2*block;//start position Y
-    static Random rand = new Random();
-    static int food_x = rand.nextInt(gridW.length)*block;
-    static int food_y = rand.nextInt(gridH.length)*block;
-    public gameScreen gS = new gameScreen("Snake");
-    public moveSnake mS = new moveSnake();
-    public foodSpawn fS = new foodSpawn();
+
+    //position of snake ,each part of snake
+    static int rec_x[] = new int[gridW.length*gridH.length];
+    static int rec_y[] = new int[gridW.length*gridH.length];
+    Random rand = new Random();
+    int food_x = rand.nextInt(gridW.length)*block;
+    int food_y = rand.nextInt(gridH.length)*block;
+    gameScreen gS = new gameScreen("Snake");
+    foodSpawn fS = new foodSpawn();
     int snakeSize = 1;
+    String moveTo = "left";
     boolean gameOver = false;
     public static void main (String[] args) {
         rec_x[0] = (gridW.length-1)/2*block;//start position X
         rec_y[0] = (gridH.length-1)/2*block;//start position Y
         new SnakeMain();
     }
-    public class moveSnake{
-        public String moveTo= "right";
-        public void up() {
-            moveTo="up";
-        }
-        public void down(){
-            moveTo="down";
-        }
-        public void left(){
-            moveTo="left";
-        }
-        public void right(){
-            moveTo="right";
-        }
 
-    }
     public class foodSpawn {
         public void spawn() {
             food_x = rand.nextInt(gridW.length)*block;
@@ -125,16 +117,16 @@ public class SnakeMain {
                 public void keyReleased(KeyEvent e) {
                     int key = e.getKeyChar();
                     if (key == 119 || key == 87){// W
-                        mS.up();
+                        moveTo = "up";
                     }
                     if (key == 83 || key == 115){ // S
-                        mS.down();
+                        moveTo = "down";
                     }
                     if (key == 97 || key == 65){ // A
-                        mS.left();
+                        moveTo = "left";
                     }
                     if (key == 100 || key == 68){ // D
-                        mS.right();
+                        moveTo = "right";
                     }
                 }
             });
@@ -146,7 +138,7 @@ public class SnakeMain {
                         System.exit(1);
                     }
                     //first element of snake movement
-                    switch (mS.moveTo){
+                    switch (moveTo){
                         case "up":
                             rec_y[0] -= block;
                             break;
