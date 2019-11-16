@@ -16,20 +16,23 @@ public class SnakeMain {
     static int height_Screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
     static int width_app = 1280;
     static int height_app = 720;
-    static int block = 40;
-    static int gridW[]=new int[width_app/block];
-    static int gridH[]=new int[ height_app/block];
-    static int rec_x=(gridW.length-1)/2*block;//start position X
-    static int rec_y=(gridH.length-1)/2*block;//start position Y
+    static int block = 40;//40
+    static int gridW[] = new int[width_app/block];
+    static int gridH[] = new int[height_app/block];
+    static int rec_x[] = new int[gridW.length*gridH.length];//(gridW.length-1)/2*block;//start position X
+    static int rec_y[] = new int[gridW.length*gridH.length];//(gridH.length-1)/2*block;//start position Y
     static Random rand = new Random();
     static int food_x = rand.nextInt(gridW.length)*block;
     static int food_y = rand.nextInt(gridH.length)*block;
     public gameScreen gS = new gameScreen("Snake");
     public moveSnake mS = new moveSnake();
     public foodSpawn fS = new foodSpawn();
+    int snakeSize = 1;
+    boolean gameOver = false;
     public static void main (String[] args) {
+        rec_x[0] = (gridW.length-1)/2*block;//start position X
+        rec_y[0] = (gridH.length-1)/2*block;//start position Y
         new SnakeMain();
-
     }
     public class moveSnake{
         public String moveTo= "right";
@@ -47,13 +50,13 @@ public class SnakeMain {
         }
 
     }
-    public static class foodSpawn {
+    public class foodSpawn {
         public void spawn() {
             food_x = rand.nextInt(gridW.length)*block;
             food_y = rand.nextInt(gridH.length)*block;
         }
     }
-    public static class DPanel extends JPanel {
+    public class DPanel extends JPanel {
 
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -80,11 +83,17 @@ public class SnakeMain {
             }
 
             //Draw Hero
-            Rectangle2D rect = new Rectangle2D.Double(rec_x, rec_y, block, block);
-            g2d.setColor(Color.red);
-            g2d.fillRect((int)rect.getX(),(int)rect.getY(),block,block);
-            g2d.draw(rect);
-
+            Rectangle2D rect;
+            for(int i = snakeSize;i > 0;i--) {
+                //get position of prev
+                rec_x[i] = rec_x[i - 1];
+                rec_y[i] = rec_y[i - 1];
+                //draw
+                rect = new Rectangle2D.Double(rec_x[i], rec_y[i], block, block);
+                g2d.setColor(Color.red);
+                g2d.fillRect((int) rect.getX(), (int) rect.getY(), block, block);
+                g2d.draw(rect);
+            }
             //Draw Food
             Rectangle2D food = new Rectangle2D.Double(food_x, food_y, block, block);
             g2d.setColor(Color.yellow);
@@ -98,7 +107,6 @@ public class SnakeMain {
             DPanel dPanel = new DPanel();
             setSize(width_app,height_app);
             setBounds(width_Screen/2-width_app/2,height_Screen/2-height_app/2,width_app,height_app);
-            //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//close on X
             // setResizable(false);
             setUndecorated(true);//without title bar
             getContentPane().add(dPanel);
@@ -133,24 +141,33 @@ public class SnakeMain {
             new Timer(200, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    if(gameOver == true){
+                        System.out.println("exit");
+                        System.exit(1);
+                    }
+                    //first element of snake movement
                     switch (mS.moveTo){
                         case "up":
-                            rec_y -= block;
+                            rec_y[0] -= block;
                             break;
                         case "down":
-                            rec_y += block;
+                            rec_y[0] += block;
                             break;
                         case "left":
-                            rec_x-=block;
+                            rec_x[0] -= block;
                             break;
                         case "right":
-                            rec_x+=block;
+                            rec_x[0] += block;
                             break;
                     }
-
+                    //if snake out of field
+                    if((rec_x[0] > width_app || rec_x[0] < 0) || (rec_y[0] > height_app || rec_y[0] < 0)){
+                        gameOver = true;
+                    }
                     //if ate a food
-                    if(rec_x == food_x && rec_y == food_y){
+                    if(rec_x[0] == food_x && rec_y[0] == food_y){
                         fS.spawn();
+                        snakeSize++;
                     }
                     gS.repaint();
                 }
